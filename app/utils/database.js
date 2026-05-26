@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 
 dns.setServers(["8.8.8.8", "8.8.4.4"])
 
-let cached = global.mongoose
+//let cached = global.mongoose
 
 const connectDB =async () => {
     try{

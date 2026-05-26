@@ -1,36 +1,61 @@
 "use client"
-import {useState, useEffect} from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 
-const DeleteItem = (context) => {
+/*
+const DeleteItem = () => {
     const [title, setTitle] = useState("")
     const [price, setPrice] = useState("")
     const [image, setImage] = useState("")
     const [description, setDescription] = useState("")
     const [email, setEmail] = useState("")
-    const {id} = context.params
+    const [error, setError] = useState("")
 
     const router = useRouter()
+    const { id } = useParams()
 
     useEffect(() => {
-        const getSingleItem = async (id) => {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/item/readsingle/${id}`, {cache: "no-store"})
-            const data = await response.json()
-            const singleItem = data.singleItem
-            setTitle(singleItem.title)
-            setPrice(singleItem.price)
-            setImage(singleItem.image)
-            setDescription(singleItem.description)
-            setEmail(singleItem.email)
+        if (!id) {
+            return
         }
-        getSingleItem(id)
+
+        const getSingleItem = async () => {
+            try {
+                const response = await fetch(`/api/item/readsingle/${id}`, { cache: "no-store" })
+                const data = await response.json()
+
+                if (!data?.singleItem) {
+                    throw new Error(data?.message || "アイテム情報の取得に失敗しました")
+                }
+
+                const singleItem = data.singleItem
+
+                setTitle(singleItem.title ?? "")
+                setPrice(singleItem.price ?? "")
+                setImage(singleItem.image ?? "")
+                setDescription(singleItem.description ?? "")
+                setEmail(singleItem.email ?? "")
+                setError("")
+            } catch (err) {
+                console.error(err)
+                setError(err instanceof Error ? err.message : "アイテム情報の取得に失敗しました")
+            }
+        }
+
+        getSingleItem()
     }, [id])
 
-    const handleDelete = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        try{
-            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/item/delete/${id}`, {
+
+        if (!id) {
+            alert("アイテムIDが取得できません")
+            return
+        }
+
+        try {
+            const response = await fetch(`/api/item/delete/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
@@ -41,24 +66,25 @@ const DeleteItem = (context) => {
                     email
                 })
             })
-            const data = await response.json()
-            alert(data.message)
+            const result = await response.json()
+            alert(result.message)
             router.push("/")
             router.refresh()
-        }catch(error){
-            console.error(error)
-            alert("アイテム削除失敗")
+        } catch (error) {
+            alert("アイテムの削除に失敗しました")
+            console.error("Error submitting form:", error)
         }
     }
 
     return (
         <div>
             <h1>アイテム削除</h1>
-            <form onSubmit={handleDelete}>
+            {error && <p>{error}</p>}
+            <form onSubmit={handleSubmit}>
                 <h2>{title}</h2>
-                <Image src={image} alt={title} width={300} height={300} alt="item-image" priority />
+                <Image src={image} alt={title} width={300} height={300} />
                 <h3>価格: {price}円</h3>
-                <p> {description}</p>
+                <p>{description}</p>
                 <button type="submit">削除</button>
             </form>
         </div>
@@ -66,3 +92,13 @@ const DeleteItem = (context) => {
 }
 
 export default DeleteItem
+*/
+const SubDelete = () => {
+    return (<div>
+        <h1>アイテム削除</h1>
+        <p>アイテムの削除は、アイテム更新ページから行ってください。</p>
+    </div>
+    )
+}
+
+export default SubDelete
